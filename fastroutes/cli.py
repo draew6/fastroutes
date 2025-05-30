@@ -21,6 +21,5 @@ def generate(url: str, output: str):
         typer.secho(f"❌ Failed to fetch client code: {e}", fg=typer.colors.RED)
         raise typer.Exit(code=1)
 
-
-if __name__ == "__main__":
+def generate_entry():
     typer.run(generate)
