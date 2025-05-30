@@ -23,7 +23,7 @@ pip install git+https://github.com/draew6/fastroutes
 ```
 
 ## 🛠️ Usage
-## ### 1. Add FastRoutes to your FastAPI app:
+### 1. Add FastRoutes to your FastAPI app:
 ```python
 from fastapi import FastAPI
 from fastroutes import FastRoutes
@@ -32,7 +32,7 @@ app = FastAPI()
 FastRoutes(app, name="MyVeryNiceClient").add_route_to_fastapi()
 ```
 This will add a /fastroutes endpoint that servers your generated client code.
-## ### 2. Download the generated client code:
+### 2. Download the generated client code:
 ```bash
 fastroutes http://localhost:8000/fastroutes output_file.py
 ```
