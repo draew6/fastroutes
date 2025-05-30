@@ -10,9 +10,9 @@ from helpers import get_model_name
 
 
 class FastRoutes:
-    def __init__(self, app: FastAPI, name: str):
+    def __init__(self, app: FastAPI, name: str, paths_to_exclude: list[str] = None):
         self.app = app
-        self.routes = Route.extract(app, paths_to_exclude=["/login"])
+        self.routes = Route.extract(app, paths_to_exclude=paths_to_exclude)
         self.name = name
 
     @staticmethod
