@@ -86,7 +86,7 @@ class FastRoutes:
         return imports + models + client_class + textwrap.indent(handlers, "    ")
 
     def add_route_to_fastapi(self):
-        @self.app.get("/fastroutes")
+        @self.app.get("/fastroutes", include_in_schema=False)
         async def get_fastroutes():
             content = self.export_code()
             file_like = BytesIO(content.encode("utf-8"))
