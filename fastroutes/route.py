@@ -6,7 +6,7 @@ from pydantic._internal._model_construction import ModelMetaclass
 import textwrap
 from dataclasses import dataclass
 from typing import Any, Literal, get_origin, get_args, Union
-from helpers import get_model_name
+from .helpers import get_model_name
 
 
 PARAMETER_UNDEFINED = "_PARAMETER_UNDEFINED"

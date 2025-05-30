@@ -5,8 +5,8 @@ from fastapi.responses import StreamingResponse
 from pydantic._internal._model_construction import ModelMetaclass
 import inspect
 from typing import get_origin, get_args
-from route import Route
-from helpers import get_model_name
+from .route import Route
+from .helpers import get_model_name
 
 
 class FastRoutes:
