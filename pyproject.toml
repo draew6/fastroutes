@@ -1,5 +1,5 @@
 [project]
-name = "fast-routes"
+name = "fastroutes"
 version = "0.1.0"
 description = "Generate HTTP clients from FastAPI apps"
 authors = [{ name = "draew6" }]
