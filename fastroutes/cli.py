@@ -1,6 +1,6 @@
 import typer
 import httpx
-
+import os
 
 def generate(url: str, output: str):
     """
@@ -14,6 +14,7 @@ def generate(url: str, output: str):
     try:
         response = httpx.get(client_url)
         response.raise_for_status()
+        os.makedirs(os.path.dirname(output))
         with open(output, "wb") as f:
             f.write(response.content)
         typer.secho(f"✅ File saved to {output}", fg=typer.colors.GREEN)
