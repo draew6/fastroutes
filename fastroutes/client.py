@@ -75,6 +75,11 @@ class FastRoutes:
             "       return self\n\n"
             "    async def __aexit__(self, exc_type, exc, tb):\n"
             "       await self._client.aclose()\n\n\n"
+            "    def set_access_token(self, access_token: str | None):\n"
+            "        if access_token:\n"
+            "            self._client.headers.update({\"Authorization\": f\"Bearer {access_token}\"})\n"
+            "        else:\n"
+            "            self._client.headers.pop(\"Authorization\", None)\n\n\n"
         )
         return class_code
 
