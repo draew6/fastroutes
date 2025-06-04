@@ -1,2 +1,2 @@
-from .client import FastRoutes
-from .cli import generate
+from .client import FastRoutes as FastRoutes
+from .cli import generate as generate

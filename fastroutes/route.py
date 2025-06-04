@@ -135,9 +135,7 @@ class Route:
             f'api_response = await self._client.request("{self.method}", url, json=payload, params=params)',
             "    ",
         )
-        raise_error_body = textwrap.indent(
-            "api_response.raise_for_status()", "    "
-        )
+        raise_error_body = textwrap.indent("api_response.raise_for_status()", "    ")
 
         is_list = self.response_signature.startswith("list[")
         response_model = (
@@ -151,11 +149,13 @@ class Route:
             parse_body = textwrap.indent("return None", "    ")
         elif is_list:
             parse_body = textwrap.indent(
-                    f"return [{response_model}(**resp_object) for resp_object in response_body]\n",
-                    "    ",
-                )
+                f"return [{response_model}(**resp_object) for resp_object in response_body]\n",
+                "    ",
+            )
         else:
-            parse_body = textwrap.indent(f"return {response_model}(**response_body)", "    ")
+            parse_body = textwrap.indent(
+                f"return {response_model}(**response_body)", "    "
+            )
 
         return (
             signature
