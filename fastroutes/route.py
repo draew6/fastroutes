@@ -135,6 +135,9 @@ class Route:
             f'api_response = await self._client.request("{self.method}", url, json=payload, params=params)',
             "    ",
         )
+        raise_error_body = textwrap.indent(
+            "api_response.raise_for_status()", "    "
+        )
 
         is_list = self.response_signature.startswith("list[")
         response_model = (
@@ -165,6 +168,8 @@ class Route:
             + payload_body
             + "\n"
             + httpx_body
+            + "\n"
+            + raise_error_body
             + "\n"
             + response_json_body
             + "\n"
