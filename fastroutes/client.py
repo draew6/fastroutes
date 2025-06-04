@@ -69,8 +69,8 @@ class FastRoutes:
     def get_client_class(self) -> str:
         class_code = (
             f"class {self.name}:\n"
-            "    def __init__(self):\n"
-            "       self._client = httpx.AsyncClient()\n\n"
+            "    def __init__(self, base_url: str):\n"
+            "       self._client = httpx.AsyncClient(base_url=base_url)\n\n"
             "    async def __aenter__(self):\n"
             "       return self\n\n"
             "    async def __aexit__(self, exc_type, exc, tb):\n"
