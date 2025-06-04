@@ -36,4 +36,4 @@ This will add a /fastroutes endpoint that servers your generated client code.
 ```bash
 fastroutes http://localhost:8000/fastroutes output_file.py
 ```
-This will save the generated ccode to `output_file.py`.
+This will save the generated code to `output_file.py`.

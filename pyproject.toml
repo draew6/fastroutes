@@ -1,20 +1,21 @@
-[project]
+[tool.poetry]
 name = "fastroutes"
 version = "0.1.0"
 description = "Generate HTTP clients from FastAPI apps"
-authors = [{ name = "draew6" }]
-dependencies = [
-    "fastapi",
-    "httpx",
-    "typer[all]",
-    "pydantic>=2.0"
-]
-readme = "README.md"
-requires-python = ">=3.9"
+authors = ["draew6"]
+packages = [{ include = "fastroutes" }]
+requires-python = ">=3.13"
 
-[project.scripts]
-fastroutes = "fastroutes.cli:generate_entry"
+[tool.poetry.dependencies]
+python = ">=3.13"
+fastapi = "0.115.12"
+pydantic = "2.11.5"
+httpx = "0.28.1"
+"typer[all]" = "0.15.4"
+
+[tool.poetry.scripts]
+fastlet = "fastroutes.cli:generate_entry"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
