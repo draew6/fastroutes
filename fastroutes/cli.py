@@ -14,7 +14,7 @@ def generate(url: str, output: str):
     try:
         response = httpx.get(client_url)
         response.raise_for_status()
-        os.makedirs(os.path.dirname(output))
+        os.makedirs(os.path.dirname(output), exist_ok=True)
         with open(output, "wb") as f:
             f.write(response.content)
         typer.secho(f"✅ File saved to {output}", fg=typer.colors.GREEN)
