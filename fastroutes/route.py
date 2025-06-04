@@ -114,7 +114,7 @@ class Route:
         )
         docstring = textwrap.indent(f'"""{self.description}"""', "    ")
 
-        url_body = textwrap.indent(f"url = f'{self.path}'", "    ")
+        url_body = textwrap.indent(f"url = {'f' if params else ''}'{self.path}'", "    ")
         params_dict = ", ".join(
             f'"{query_param.alias}":{query_param.alias}'
             for query_param in self.query_parameters
