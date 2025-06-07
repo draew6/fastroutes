@@ -34,7 +34,7 @@ class FastRoutes:
                 if get_origin(return_type) is list:
                     rts = list(get_args(return_type))
                 if get_origin(return_type) is dict:
-                    rts = list(get_args(return_type.values()))
+                    rts = list(get_args(return_type))
                 else:
                     rts = [return_type]
                 for rt in rts:
