@@ -99,7 +99,7 @@ class Route:
         else:
             if return_type is None:
                 return "None"
-            return f"list[{return_type.__name__}]" if is_list else return_type.__name__
+            return f"list[{return_type.__class__.__name__}]" if is_list else return_type.__class__.__name__
 
     @property
     def handler(self):
