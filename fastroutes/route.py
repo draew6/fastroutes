@@ -88,18 +88,24 @@ class Route:
     def response_signature(self):
         if get_origin(self.response) is list:
             return_type = get_args(self.response)[0]
-            is_list = True
+
+            if isinstance(return_type, ModelMetaclass):
+                model_name = get_model_name(return_type)
+                return f"list[{model_name}]"
+            return f"list[{return_type.__name__}]"
+
+        elif get_origin(self.response) is dict:
+            rt = get_args(self.response)
+            return_type = rt[1]
+            if isinstance(return_type, ModelMetaclass):
+                model_name = get_model_name(return_type)
+                return f"dict[{rt[0].__name__}, {model_name}]"
+            return f"dict[{rt[0].__name__}, {rt[1].__name__}]"
+        elif get_origin(self.response) is None:
+            return "None"
         else:
             return_type = self.response
-            is_list = False
-
-        if isinstance(return_type, ModelMetaclass):
-            model_name = get_model_name(return_type)
-            return f"list[{model_name}]" if is_list else model_name
-        else:
-            if return_type is None:
-                return "None"
-            return f"list[{return_type.__class__.__name__}]" if is_list else return_type.__class__.__name__
+            return f"{return_type.__name__}"
 
     @property
     def handler(self):
@@ -114,7 +120,9 @@ class Route:
         )
         docstring = textwrap.indent(f'"""{self.description}"""', "    ")
 
-        url_body = textwrap.indent(f"url = {'f' if self.path_parameters else ''}'{self.path}'", "    ")
+        url_body = textwrap.indent(
+            f"url = {'f' if self.path_parameters else ''}'{self.path}'", "    "
+        )
         params_dict = ", ".join(
             f'"{query_param.alias}":{query_param.alias}'
             for query_param in self.query_parameters
