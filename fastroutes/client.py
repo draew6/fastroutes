@@ -20,7 +20,9 @@ class FastRoutes:
         return (
             "from pydantic import BaseModel, StringConstraints, Field, EmailStr\n"
             "from typing import Annotated\n"
-            "import httpx\n\n\n"
+            "import httpx\n"
+            "import typing"
+            "from datetime import datetime\n\n\n"
         )
 
     def get_models(self) -> str:
