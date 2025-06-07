@@ -101,7 +101,7 @@ class Route:
                 model_name = get_model_name(return_type)
                 return f"dict[{rt[0].__name__}, {model_name}]"
             return f"dict[{rt[0].__name__}, {rt[1].__name__}]"
-        elif get_origin(self.response) is None:
+        elif self.response is None:
             return "None"
         else:
             return_type = self.response
