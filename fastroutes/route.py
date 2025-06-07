@@ -104,6 +104,9 @@ class Route:
         elif self.response is None:
             return "None"
         else:
+            if isinstance(self.response, ModelMetaclass):
+                model_name = get_model_name(self.response)
+                return model_name
             return_type = self.response
             return f"{return_type.__name__}"
 
