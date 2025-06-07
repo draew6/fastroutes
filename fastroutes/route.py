@@ -145,7 +145,7 @@ class Route:
         )
         raise_error_body = textwrap.indent("api_response.raise_for_status()", "    ")
 
-        is_list = self.response_signature.startswith("list[")
+        is_list = self.response_signature.startswith("list[") or self.response_signature.startswith("dict[")
         response_model = (
             self.response_signature[5:-1] if is_list else self.response_signature
         )
