@@ -21,7 +21,7 @@ class FastRoutes:
             "from pydantic import BaseModel, StringConstraints, Field, EmailStr\n"
             "from typing import Annotated\n"
             "import httpx\n"
-            "import typing"
+            "import typing\n"
             "from datetime import datetime\n\n\n"
         )
 
