@@ -114,9 +114,10 @@ class Route:
     def handler(self):
         params = ", ".join(
             str(param)
-            for param in self.body_parameters
-            + self.path_parameters
-            + self.query_parameters
+            for param in sorted(
+                self.body_parameters + self.path_parameters + self.query_parameters,
+                key=lambda p: not p.required,
+            )
         )
         signature = (
             f"""async def {self.name}(self, {params}) -> {self.response_signature}:\n"""
@@ -148,10 +149,14 @@ class Route:
         )
         raise_error_body = textwrap.indent("api_response.raise_for_status()", "    ")
 
-        is_list = self.response_signature.startswith("list[") or self.response_signature.startswith("dict[")
-        response_model = (
-            self.response_signature[5:-1] if is_list else self.response_signature
-        )
+        is_list = self.response_signature.startswith("list[")
+        is_dict = self.response_signature.startswith("dict[")
+        if is_list:
+            response_model = self.response_signature[5:-1]
+        elif is_dict:
+            response_model = self.response_signature[5:-1].split(", ")[1]
+        else:
+            response_model = self.response_signature
         response_json_body = textwrap.indent(
             "response_body = api_response.json()", "    "
         )
@@ -161,6 +166,11 @@ class Route:
         elif is_list:
             parse_body = textwrap.indent(
                 f"return [{response_model}(**resp_object) for resp_object in response_body]\n",
+                "    ",
+            )
+        elif is_dict:
+            parse_body = textwrap.indent(
+                f"return {{key: {response_model}(**value) for key, value in response_body.items()}}",
                 "    ",
             )
         else:
