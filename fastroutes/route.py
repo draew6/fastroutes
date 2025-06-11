@@ -43,7 +43,7 @@ class Parameter:
         elif origin is Union:
             type_repr = " | ".join(t.__name__ for t in args)
         else:
-            type_repr = str(type_)
+            type_repr = str(type_).replace("datetime.datetime", "datetime")
 
         if self.default != PARAMETER_UNDEFINED:
             return f"{self.alias}: {type_repr} = {self.default!r}"
@@ -75,7 +75,7 @@ class Route:
         return [
             Parameter(
                 name,
-                info.annotation.__name__,
+                info.annotation,
                 info.is_required(),
                 info.default
                 if info.default is not PydanticUndefined
