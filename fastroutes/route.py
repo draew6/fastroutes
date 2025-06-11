@@ -75,7 +75,7 @@ class Route:
         return [
             Parameter(
                 name,
-                info.annotation,
+                info.annotation.__name__,
                 info.is_required(),
                 info.default
                 if info.default is not PydanticUndefined
