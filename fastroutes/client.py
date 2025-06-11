@@ -32,7 +32,7 @@ class FastRoutes:
             "from typing import Annotated, Literal\n"
             "import httpx\n"
             "import typing\n"
-            "from datetime import datetime\n\n\n"
+            "import datetime\n\n\n"
         )
 
     def get_models(self) -> str:
