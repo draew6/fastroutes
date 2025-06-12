@@ -7,6 +7,7 @@ import textwrap
 from dataclasses import dataclass
 from typing import Any, Literal, get_origin, get_args, Union
 from .helpers import get_model_name
+from datetime import datetime
 
 
 PARAMETER_UNDEFINED = "_PARAMETER_UNDEFINED"
@@ -136,7 +137,7 @@ class Route:
         else:
             params_body = textwrap.indent("params = None", "    ")
         payload_dict = ", ".join(
-            f'"{body_param.alias}":{body_param.alias}'
+            f'"{body_param.alias}":{body_param.alias}{".isoformat()" if body_param.type is datetime else ""}'
             for body_param in self.body_parameters
         )
         if self.body_parameters:
