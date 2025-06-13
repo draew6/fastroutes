@@ -43,8 +43,7 @@ class Parameter:
         if origin is None:
             type_repr = type_.__name__
         elif origin is Union:
-            args = [a for a in args if a is not NoneType] + [None] if NoneType in args else args
-            type_repr = " | ".join(t.__name__ for t in args)
+            type_repr = " | ".join(t.__name__ for t in args).replace("NoneType", "None")
         else:
             type_repr = str(type_).replace("datetime.datetime", "datetime")
 
