@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastroutes"
-version = "0.1.5"
+version = "0.1.6"
 description = "Generate HTTP clients from FastAPI apps"
 authors = ["draew6"]
 packages = [{ include = "fastroutes" }]
