@@ -28,6 +28,7 @@ class FastRoutes:
     @staticmethod
     def get_imports():
         return (
+            "from models import *\n"
             "from pydantic import BaseModel, StringConstraints, Field, EmailStr\n"
             "from typing import Annotated, Literal\n"
             "import httpx\n"

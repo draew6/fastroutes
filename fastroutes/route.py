@@ -93,6 +93,8 @@ class Route:
             if isinstance(return_type, ModelMetaclass):
                 model_name = get_model_name(return_type)
                 return f"list[{model_name}]"
+            elif get_origin(return_type) is Literal:
+                return f"list[Literal[{', '.join(f"'{str(arg)}'" for arg in get_args(return_type))}]]"
             return f"list[{return_type.__name__}]"
 
         elif get_origin(self.response) is dict:
