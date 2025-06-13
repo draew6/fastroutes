@@ -6,6 +6,7 @@ from pydantic._internal._model_construction import ModelMetaclass
 import textwrap
 from dataclasses import dataclass
 from typing import Any, Literal, get_origin, get_args, Union
+from types import NoneType
 from .helpers import get_model_name
 from datetime import datetime
 
@@ -42,6 +43,7 @@ class Parameter:
         if origin is None:
             type_repr = type_.__name__
         elif origin is Union:
+            args = [a for a in args if a is not NoneType] + [None] if NoneType in args else args
             type_repr = " | ".join(t.__name__ for t in args)
         else:
             type_repr = str(type_).replace("datetime.datetime", "datetime")
