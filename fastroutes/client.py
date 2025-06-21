@@ -86,7 +86,8 @@ class FastRoutes:
                                 get_model_name(rtm.__base__),
                             )
                             relationships[get_model_name(rtm.__base__)] += [mdl]
-
+                            if rtm is not rt:
+                                relationships[get_model_name(rt)].append(mdl)
                             already_written.append(model_name)
                             all_models.append((get_model_name(rtm), mdl, rtm))
 
@@ -115,34 +116,18 @@ class FastRoutes:
         dfs("PydanticMainBaseModel")
 
         for model_name, model, pydantic_model in all_models:
-            if model_name in correct_order_names:
-                continue  # already scheduled
-
-            # 1. walk up the inheritance chain (BaseModel excluded)
-            ancestors = []
-            parent = pydantic_model.__base__
-            while parent is not BaseModel:
-                ancestors.append(parent)
-                parent = parent.__base__
-
-            # 2. add ancestors first (grand-parent → parent)
-            for anc in reversed(ancestors):
-                anc_name = get_model_name(anc)
-                if anc_name not in correct_order_names:
-                    correct_order.append(
-                        Model(
-                            anc_name,
-                            self.strip_decorators_from_source(anc).replace(
-                                f"class {anc.__name__}", f"class {anc_name}"
-                            ),
-                            get_model_name(anc.__base__),
-                        )
+            if model_name not in correct_order_names:
+                to_add = extract_parents(pydantic_model)
+                correct_order = [
+                    Model(
+                        model_name,
+                        self.strip_decorators_from_source(to_a).replace(
+                            f"class {to_a.__name__}", f"class {model_name}"
+                        ),
+                        get_model_name(to_a),
                     )
-                    correct_order_names.append(anc_name)
-
-            # 3. finally add the model itself
-            correct_order.append(model)
-            correct_order_names.append(model_name)
+                    for to_a in to_add
+                ] + correct_order
 
         models_code = ""
         for model in correct_order:
