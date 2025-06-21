@@ -48,7 +48,7 @@ class FastRoutes:
                     models.append(field.annotation)
                     models = get_models_from_fields(field.annotation, models)
                 elif get_origin(field.annotation) is list:
-                    list_element = list(get_args(return_type))[0]
+                    list_element = list(get_args(field.annotation))[0]
                     if isinstance(list_element, ModelMetaclass):
                         models.append(list_element)
                         models = get_models_from_fields(list_element, models)
