@@ -135,7 +135,7 @@ class FastRoutes:
         for old_value, new_value in mapping.items():
             models_code = models_code.replace(
                 f"({old_value})", f"({new_value})"
-            ).replace(f": {old_value}", f": {new_value}")
+            ).replace(f": {old_value}", f": {new_value}").replace(f"[{old_value}]", f"[{new_value}]")
         return models_code + "\n\n\n"
 
     @staticmethod
