@@ -87,7 +87,7 @@ class FastRoutes:
                             )
                             relationships[get_model_name(rtm.__base__)] += [mdl]
                             if rtm is not rt:
-                                relationships[get_model_name(rt)].append(mdl)
+                                relationships[get_model_name(rt)].insert(0, mdl)
                             already_written.append(model_name)
                             all_models.append((get_model_name(rtm), mdl, rtm))
 
