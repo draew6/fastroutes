@@ -37,6 +37,14 @@ class FastRoutes:
         )
 
     def get_models(self) -> str:
+        def extract_parents(model: BaseModel, models_to_export: list[BaseModel] = None):
+            if models_to_export is None:
+                models_to_export = []
+            parent = model.__base__
+            if parent is BaseModel:
+                return models_to_export
+            return extract_parents(parent, [parent] + models_to_export)
+
         def get_models_from_fields(model: BaseModel, models=None) -> list[BaseModel]:
             """
             Recursively extract all models from the fields of a given model.
@@ -53,16 +61,12 @@ class FastRoutes:
                         models.append(list_element)
                         models = get_models_from_fields(list_element, models)
 
-            if models:
-                print("those are here", models)
             return models
 
-        already_written = [get_model_name(BaseModel)]
-
+        all_models = {}
+        relationships = defaultdict(list[str])
         mapping = {}
-        relationships = defaultdict(list[Model])
-        all_models: list[tuple[str, Model, BaseModel]] = []
-
+        base_models = {}
         for route in self.routes:
             for return_type in route.return_types:
                 if get_origin(return_type) is list:
@@ -73,64 +77,47 @@ class FastRoutes:
                     rts = [return_type]
                 for rt in rts:
                     if isinstance(rt, ModelMetaclass):
-                        for rtm in get_models_from_fields(rt) + [rt]:
-                            model_name = get_model_name(rtm)
-                            if model_name in already_written:
-                                continue
-                            mapping[rtm.__name__] = model_name
-                            mdl = Model(
+                        models_in_model = get_models_from_fields(rt)
+                        models_in_model = models_in_model + [item for list in [extract_parents(mim) for mim in models_in_model] for item in list]
+                        for relevant_model in models_in_model + [rt]:
+                            model_name = get_model_name(relevant_model)
+                            all_models[model_name] = Model(
                                 model_name,
-                                self.strip_decorators_from_source(rtm).replace(
-                                    f"class {rtm.__name__}", f"class {model_name}"
+                                self.strip_decorators_from_source(relevant_model).replace(
+                                    f"class {relevant_model.__name__}", f"class {model_name}"
                                 ),
-                                get_model_name(rtm.__base__),
+                                get_model_name(relevant_model.__base__),
                             )
-                            relationships[get_model_name(rtm.__base__)] += [mdl]
-                            if rtm is not rt:
-                                relationships[get_model_name(rt)].insert(0, mdl)
-                            already_written.append(model_name)
-                            all_models.append((get_model_name(rtm), mdl, rtm))
+                            base_models[model_name] = relevant_model
+                            mapping[relevant_model.__name__] = model_name
+        for model_name, model in base_models.items():
+            parent_model_name = get_model_name(model.__base__)
+            models_in_model = get_models_from_fields(model)
+            relationships[model_name] = [get_model_name(m) for m in models_in_model] + [parent_model_name]
 
         correct_order = []
-        correct_order_names = []
 
-        def dfs(parent_name: str) -> None:
+        def add_to_order(model_name: str) -> None:
             """
-            Depth-first preorder walk:
-            append every direct child of *parent_name*,
-            then recurse into that child's own descendants.
+            Add a model to the order list, ensuring no duplicates.
             """
-            for child in relationships.get(parent_name, []):
-                correct_order.append(child)  # parent is already earlier
-                correct_order_names.append(child.name)
-                dfs(child.name)
+            if model_name not in correct_order:
+                correct_order.append(model_name)
+            for model, dependencies in relationships.items():
+                new_dependencies = [ dep for dep in dependencies if dep != model_name ]
+                relationships[model] = new_dependencies
 
-        def extract_parents(model: BaseModel, models_to_export: list[BaseModel] = None):
-            if models_to_export is None:
-                models_to_export = []
-            parent = model.__base__
-            if parent is BaseModel:
-                return models_to_export
-            return extract_parents(parent, [parent] + models_to_export)
-
-        dfs("PydanticMainBaseModel")
-
-        for model_name, model, pydantic_model in all_models:
-            if model_name not in correct_order_names:
-                to_add = extract_parents(pydantic_model)
-                correct_order = [
-                    Model(
-                        model_name,
-                        self.strip_decorators_from_source(to_a).replace(
-                            f"class {to_a.__name__}", f"class {model_name}"
-                        ),
-                        get_model_name(to_a),
-                    )
-                    for to_a in to_add
-                ] + correct_order
+        add_to_order("PydanticMainBaseModel")
+        while True:
+            ready = [model for model, deps in relationships.items() if not deps and model not in correct_order]
+            if not ready:
+                break
+            for model in ready:
+                add_to_order(model)
 
         models_code = ""
-        for model in correct_order:
+        for model_name in correct_order[1:]:
+            model = all_models[model_name]
             models_code += model.code + "\n\n"
 
         for old_value, new_value in mapping.items():

@@ -44,9 +44,17 @@ class Parameter:
             type_repr = type_.__name__
         elif origin is Union:
             type_repr = " | ".join(t.__name__ for t in args).replace("NoneType", "None")
+        elif origin is list:
+            if len(args) == 1:
+                if isinstance(args[0], ModelMetaclass):
+                    model_name = get_model_name(args[0])
+                    type_repr = f"list[{model_name}]"
+                else:
+                    type_repr = str(type_).replace("datetime.datetime", "datetime")
+            else:
+                raise ValueError("List type must have exactly one argument.")
         else:
             type_repr = str(type_).replace("datetime.datetime", "datetime")
-
         if self.default != PARAMETER_UNDEFINED:
             return f"{self.alias}: {type_repr} = {self.default!r}"
         return f"{self.alias}: {type_repr}"
