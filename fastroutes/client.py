@@ -28,6 +28,7 @@ class FastRoutes:
     @staticmethod
     def get_imports():
         return (
+            "# flake8: noqa: F403, F405\n"
             "from models import *\n"
             "from pydantic import BaseModel, StringConstraints, Field, EmailStr\n"
             "from typing import Annotated, Literal, Optional\n"
