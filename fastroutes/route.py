@@ -169,9 +169,14 @@ class Route:
             response_model = self.response_signature[5:-1].split(", ")[1]
         else:
             response_model = self.response_signature
-        response_json_body = textwrap.indent(
-            "response_body = api_response.json()", "    "
-        )
+        if self.response is not None:
+            response_json_body = textwrap.indent(
+                "response_body = api_response.json()", "    "
+            )
+        else:
+            response_json_body = textwrap.indent(
+                "", "    "
+            )
 
         if self.response is None:
             parse_body = textwrap.indent("return None", "    ")
