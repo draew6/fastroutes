@@ -78,8 +78,8 @@ class FastRoutes:
                 for rt in rts:
                     if isinstance(rt, ModelMetaclass):
                         models_in_model = get_models_from_fields(rt)
-                        models_in_model = models_in_model + [item for list in [extract_parents(mim) for mim in models_in_model] for item in list]
-                        for relevant_model in models_in_model + [rt]:
+                        models_in_model = models_in_model + [item for list in [extract_parents(mim) for mim in models_in_model + [rt]] for item in list]
+                        for relevant_model in models_in_model:
                             model_name = get_model_name(relevant_model)
                             all_models[model_name] = Model(
                                 model_name,
