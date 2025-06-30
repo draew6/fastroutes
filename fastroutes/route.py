@@ -178,21 +178,22 @@ class Route:
                 "", "    "
             )
 
+        asterisk = "**" if self.response_signature != "list[int]" else ""
         if self.response is None:
             parse_body = textwrap.indent("return None", "    ")
         elif is_list:
             parse_body = textwrap.indent(
-                f"return [{response_model}(**resp_object) for resp_object in response_body]\n",
+                f"return [{response_model}({asterisk}resp_object) for resp_object in response_body]\n",
                 "    ",
             )
         elif is_dict:
             parse_body = textwrap.indent(
-                f"return {{key: {response_model}(**value) for key, value in response_body.items()}}",
+                f"return {{key: {response_model}({asterisk}value) for key, value in response_body.items()}}",
                 "    ",
             )
         else:
             parse_body = textwrap.indent(
-                f"return {response_model}(**response_body)", "    "
+                f"return {response_model}({asterisk}response_body)", "    "
             )
 
         return (
