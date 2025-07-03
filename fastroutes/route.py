@@ -184,10 +184,16 @@ class Route:
         if self.response is None:
             parse_body = textwrap.indent("return None", "    ")
         elif is_list:
-            parse_body = textwrap.indent(
-                f"return [{response_model}({asterisk}resp_object) for resp_object in response_body]\n",
-                "    ",
-            )
+            if "Literal" in self.response_signature:
+                parse_body = textwrap.indent(
+                    f"return [resp_object for resp_object in response_body]\n",
+                    "    ",
+                )
+            else:
+                parse_body = textwrap.indent(
+                    f"return [{response_model}({asterisk}resp_object) for resp_object in response_body]\n",
+                    "    ",
+                )
         elif is_dict:
             parse_body = textwrap.indent(
                 f"return {{key: {response_model}({asterisk}value) for key, value in response_body.items()}}",
