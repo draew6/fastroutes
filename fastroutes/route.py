@@ -179,6 +179,8 @@ class Route:
             )
 
         asterisk = "**" if self.response_signature != "list[int]" else ""
+        if is_dict and self.response_signature.endswith("int]"):
+            asterisk = "**"
         if self.response is None:
             parse_body = textwrap.indent("return None", "    ")
         elif is_list:
