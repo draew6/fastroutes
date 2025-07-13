@@ -178,7 +178,7 @@ class Route:
                 "", "    "
             )
 
-        asterisk = "**" if self.response_signature != "list[int]" else ""
+        asterisk = "**" if self.response_signature != "list[int]" and not self.response_signature.endswith(", list]") else ""
         if is_dict and self.response_signature.endswith("int]"):
             asterisk = ""
         if self.response is None:
