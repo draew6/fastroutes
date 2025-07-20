@@ -4,13 +4,13 @@ from httpx import HTTPStatusError
 
 
 async def handle_errors[T](call: Awaitable[T], info: str | None = None) -> T:
-    result = await call
-    if isinstance(result, HTTPStatusError):
+    try:
+        return await call
+    except HTTPStatusError as e:
         raise HTTPException(
-            status_code=result.response.status_code,
-            detail=result.response.text,
+            status_code=e.response.status_code,
+            detail=e.response.text,
             headers={"X-Error-Info": info} if info else None,
         )
-    elif isinstance(result, BaseException):
-        raise result
-    return result
+    except Exception as e:
+        raise e
