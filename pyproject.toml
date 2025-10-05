@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastroutes"
-version = "0.1.12"
+version = "0.2.0"
 description = "Generate HTTP clients from FastAPI apps"
 authors = ["draew6"]
 packages = [{ include = "fastroutes" }]
@@ -8,10 +8,10 @@ requires-python = ">=3.13"
 
 [tool.poetry.dependencies]
 python = ">=3.13"
-fastapi = "0.115.13"
-pydantic = "2.11.7"
-httpx = "0.28.1"
-"typer[all]" = "0.16.0"
+fastapi = ">=0.115.13"
+pydantic = ">=2.11,<3.0.0"
+httpx = ">0.28,<1.0.0"
+"typer[all]" = ">0.15,<1.0.0"
 
 [tool.poetry.scripts]
 fastroutes = "fastroutes.cli:generate_entry"
